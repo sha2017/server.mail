@@ -1,0 +1,10 @@
+hosts = ldap1.int.ams1.weho.st
+dn = {{ openldap_.binduser }}
+dnpass = {{ openldap_.rootpw }}
+ldap_version = 3
+base = {{ openldap_.domain_base  }}
+user_attrs = 
+user_filter = (&(objectclass=inetOrgPerson)(mail=%u)) 
+pass_attrs = mail=user,userPassword=password
+pass_filter = (&(objectclass=inetOrgPerson)(mail=%u))
+default_pass_scheme = CRYPT

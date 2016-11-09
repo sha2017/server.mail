@@ -1,0 +1,37 @@
+---
+- name: Install packages for Debian derivatives
+  apt: >
+    pkg={{ item }}
+    update_cache=yes
+    state=latest
+  with_items:
+    - dovecot-core
+    - dovecot-imapd
+    - dovecot-pop3d
+    - dovecot-lmtpd
+    - dovecot-ldap
+    - dovecot-sieve
+    - dovecot-managesieved
+
+    
+- group: name=vmail state=present gid=5000
+- user: name=vmail comment="vmail" uid=5000 group=mail home="/srv/mail"
+
+- name: template examples
+  action: template
+    src='etc/dovecot/{{ item }}'
+    dest='/etc/dovecot/{{ item }}'
+  with_items:
+    - "dovecot-ldap.conf.ext"
+    - "dovecot.conf"
+    - "conf.d/10-auth.conf"
+    - "conf.d/10-mail.conf"
+    - "conf.d/10-ssl.conf"
+    - "conf.d/10-master.conf"
+    - "conf.d/15-lda.conf"
+    - "conf.d/20-imap.conf"
+    - "conf.d/20-lmtp.conf"
+    - "conf.d/20-managesieve.conf"
+    - "conf.d/90-acl.conf"
+    - "conf.d/90-sieve.conf"
+  notify: restart dovecot

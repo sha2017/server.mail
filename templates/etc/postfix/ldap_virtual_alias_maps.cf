@@ -1,0 +1,7 @@
+bind = yes
+bind_dn = {{ openldap_.binduser }}
+bind_pw = {{ openldap_.rootpw  }}
+server_host = {{ openldap_.uri }}
+search_base = {{ openldap_.domain_base  }} 
+query_filter = mail=%s
+result_attribute = mailMessageStore

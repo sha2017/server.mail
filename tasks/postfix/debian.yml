@@ -1,0 +1,51 @@
+---
+- name: Set Postfix option type as internet site
+  debconf: name=postfix question="postfix/main_mailer_type" value="'Internet Site'" vtype="string"
+
+- name: Set Postfix option hostname
+  debconf: name=postifx question="postfix/mailname" value="{{ansible_fqdn}}" vtype="string"
+
+- name: Install packages for Debian derivatives
+  apt: >
+    pkg={{ item }}
+    update_cache=yes
+    state=latest
+  with_items:
+    - postfix
+    - postfix-ldap
+    - postfix-pcre
+    - sasl2-bin
+    - libsasl2-2 
+
+- group: name=vmail state=present gid=5000
+- user: name=vmail comment="vmail" uid=5000 group=mail home="/srv/mail"
+
+- name: template postfix
+  action: template
+    src='etc/postfix/{{ item }}'
+    dest='/etc/postfix/{{ item }}'
+  with_items:
+    - "main.cf"
+    - "master.cf"
+    - "ldap_virtual_domains_maps.cf"
+    - "ldap_virtual_mailbox_maps.cf"
+    - "ldap_virtual_alias_maps.cf"
+
+- name: add postfix to sasl group
+  user: name=postfix append=yes groups=sasl
+
+- name: Copy etc/default/saslauthd
+  action: template 
+    src='etc/default/saslauthd'
+    dest='/etc/default/saslauthd'
+  notify: start saslauthd
+
+- name: Copy etc/default/saslauthd
+  action: template 
+    src='etc/saslauthd.conf'
+    dest='/etc/saslauthd.conf'
+  notify: start saslauthd
+
+- name: Install saslauthd ldap
+  action: template src='etc/saslauthd.conf' dest=/etc/saslauthd.conf owner=root group=sasl
+  notify: restart saslauthd

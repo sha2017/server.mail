@@ -1,0 +1,18 @@
+---
+# handlers file for server.postfix
+
+
+- name: restart postfix
+  action: service name=postfix state=restarted enabled=yes
+
+- name: restart dovecot
+  action: service name=dovecot state=started enabled=yes
+
+- name: stop saslauthd
+  action: service name=saslauthd state=stopped enabled=yes
+
+- name: restart saslauthd
+  action: service name=saslauthd state=restarted enabled=yes
+
+- name: start saslauthd
+  action: service name=saslauthd state=started enabled=yes
