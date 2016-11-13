@@ -16,6 +16,8 @@
     - postfix-pcre
     - sasl2-bin
     - libsasl2-2 
+    - spamassassin
+    - spamc
 
 - group: name=vmail state=present gid=5000
 - user: name=vmail comment="vmail" uid=5000 group=mail home="/srv/mail"
@@ -45,6 +47,12 @@
     src='etc/saslauthd.conf'
     dest='/etc/saslauthd.conf'
   notify: start saslauthd
+
+- name: Copy Spamassassin
+  action: template 
+    src='etc/spamassassin/local.cf'
+    dest='/etc/spamassassin/local.cf'
+  notify: restart spamassassin
 
 - name: Install saslauthd ldap
   action: template src='etc/saslauthd.conf' dest=/etc/saslauthd.conf owner=root group=sasl
