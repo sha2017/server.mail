@@ -16,3 +16,7 @@
 
 - name: start saslauthd
   action: service name=saslauthd state=started enabled=yes
+  
+ - name: restart spamassassin
+   action: service name=spamassassin state=restarted enabled=yes
+  
