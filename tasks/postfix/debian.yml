@@ -29,6 +29,8 @@
   with_items:
     - "main.cf"
     - "master.cf"
+    - "header_checks"
+    - "mime_header_checks"
     - "ldap_virtual_domains_maps.cf"
     - "ldap_virtual_mailbox_maps.cf"
     - "ldap_virtual_alias_maps.cf"
